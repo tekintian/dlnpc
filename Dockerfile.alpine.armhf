@@ -1,13 +1,11 @@
 FROM hypriot/rpi-alpine
 MAINTAINER 304442 - https://304442.github.io/
 # https://blog.hypriot.com/post/setup-simple-ci-pipeline-for-arm-images/
+# https://resin.io/blog/building-arm-containers-on-any-x86-machine-even-dockerhub/
 
 ENV DEBUG=false              \
 	DOCKER_GEN_VERSION=0.7.3 \
 	DOCKER_HOST=unix:///var/run/docker.sock
-
-# COPY qemu-arm-static /usr/bin/qemu-arm-static
-# https://resin.io/blog/building-arm-containers-on-any-x86-machine-even-dockerhub/
 
 RUN apk --update add bash curl ca-certificates procps jq tar \
 	&& curl -L -O https://github.com/jwilder/docker-gen/releases/download/$DOCKER_GEN_VERSION/docker-gen-linux-armhf-$DOCKER_GEN_VERSION.tar.gz \
