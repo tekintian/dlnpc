@@ -1,4 +1,5 @@
-FROM golang:1.10-alpine AS go-builder
+FROM golang:1.11-alpine AS go-builder
+MAINTAINER TekinTian https://githu.com/tekintian/
 
 ENV DOCKER_GEN_VERSION=0.7.4
 
