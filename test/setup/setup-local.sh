@@ -88,7 +88,7 @@ EOF
       down --volumes
 
     # Stop and remove nginx-proxy and (if required) docker-gen
-    for cid in $(docker ps -a --filter "label=com.github.jrcs.letsencrypt_nginx_proxy_companion.test_suite" --format "{{.ID}}"); do
+    for cid in $(docker ps -a --filter "label=com.github.tekintian.dlnpc.test_suite" --format "{{.ID}}"); do
       docker stop "$cid"
       docker rm --volumes "$cid"
     done

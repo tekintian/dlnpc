@@ -43,7 +43,7 @@ function check_writable_directory {
 
 function check_dh_group {
     # Credits to Steve Kamerman for the background Diffie-Hellman creation logic.
-    # https://github.com/jwilder/nginx-proxy/pull/589
+    # https://github.com/tekintian/nginx-proxy/pull/589
     local DHPARAM_BITS="${DHPARAM_BITS:-2048}"
     re='^[0-9]*$'
     if ! [[ "$DHPARAM_BITS" =~ $re ]] ; then
@@ -150,13 +150,13 @@ if [[ "$*" == "/bin/bash /app/start.sh" ]]; then
         echo "Check that you are doing one of the following :" >&2
         echo -e "\t- Use the --volumes-from option to mount volumes from the nginx-proxy container." >&2
         echo -e "\t- Set the NGINX_PROXY_CONTAINER env var on the letsencrypt-companion container to the name of the nginx-proxy container." >&2
-        echo -e "\t- Label the nginx-proxy container to use with 'com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy'." >&2
+        echo -e "\t- Label the nginx-proxy container to use with 'com.github.tekintian.dlnpc.nginx_proxy'." >&2
         exit 1
     elif [[ -z "$(get_docker_gen_container)" ]] && ! is_docker_gen_container "$(get_nginx_proxy_container)"; then
         echo "Error: can't get docker-gen container id !" >&2
         echo "If you are running a three containers setup, check that you are doing one of the following :" >&2
         echo -e "\t- Set the NGINX_DOCKER_GEN_CONTAINER env var on the letsencrypt-companion container to the name of the docker-gen container." >&2
-        echo -e "\t- Label the docker-gen container to use with 'com.github.jrcs.letsencrypt_nginx_proxy_companion.docker_gen.'" >&2
+        echo -e "\t- Label the docker-gen container to use with 'com.github.tekintian.dlnpc.docker_gen.'" >&2
         exit 1
     fi
     check_writable_directory '/etc/nginx/certs'

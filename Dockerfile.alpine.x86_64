@@ -1,12 +1,12 @@
 FROM alpine:latest
-MAINTAINER TekinTian https://githu.com/tekintian/
+LABEL maintainer="TekinTian https://githu.com/tekintian/"
 
 ENV DEBUG=false              \
 	DOCKER_GEN_VERSION=0.7.4 \
 	DOCKER_HOST=unix:///var/run/docker.sock
 
 RUN apk --update add bash curl ca-certificates procps jq tar && \
-	curl -L -O https://github.com/jwilder/docker-gen/releases/download/$DOCKER_GEN_VERSION/docker-gen-linux-amd64-$DOCKER_GEN_VERSION.tar.gz && \
+	curl -L -O https://github.com/tekintian/docker-gen/releases/download/$DOCKER_GEN_VERSION/docker-gen-linux-amd64-$DOCKER_GEN_VERSION.tar.gz && \
 	tar -C /usr/local/bin -xvzf docker-gen-linux-amd64-$DOCKER_GEN_VERSION.tar.gz && \
 	rm -f docker-gen-linux-amd64-$DOCKER_GEN_VERSION.tar.gz && \
 	apk del tar && \

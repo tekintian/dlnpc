@@ -162,7 +162,7 @@ function is_docker_gen_container {
 
 function get_docker_gen_container {
     # First try to get the docker-gen container ID from the container label.
-    local docker_gen_cid="$(labeled_cid com.github.jrcs.letsencrypt_nginx_proxy_companion.docker_gen)"
+    local docker_gen_cid="$(labeled_cid com.github.tekintian.dlnpc.docker_gen)"
 
     # If the labeled_cid function dit not return anything and the env var is set, use it.
     if [[ -z "$docker_gen_cid" ]] && [[ -n "${NGINX_DOCKER_GEN_CONTAINER:-}" ]]; then
@@ -176,7 +176,7 @@ function get_docker_gen_container {
 function get_nginx_proxy_container {
     local volumes_from
     # First try to get the nginx container ID from the container label.
-    local nginx_cid="$(labeled_cid com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy)"
+    local nginx_cid="$(labeled_cid com.github.tekintian.dlnpc.nginx_proxy)"
 
     # If the labeled_cid function dit not return anything ...
     if [[ -z "${nginx_cid}" ]]; then

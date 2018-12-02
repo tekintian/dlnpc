@@ -198,7 +198,7 @@
 
 set -e
 
-## Next eleven lines were added by jrcs/docker-letsencrypt-nginx-proxy-companion
+## Next eleven lines were added by tekintian/dlnpc
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 self="$(basename "$0")"
 
@@ -225,7 +225,7 @@ EOUSAGE
 }
 
 # arg handling
-## Next nine lines were added or modified by jrcs/docker-letsencrypt-nginx-proxy-companion
+## Next nine lines were added or modified by tekintian/dlnpc
 case "$(uname)" in
 	Linux)
 	opts="$(getopt -o 'hdkt:c:?' --long 'dry-run,help,test:,config:,keep-namespace' -- "$@" || { usage >&2 && false; })"
@@ -246,12 +246,12 @@ while true; do
 	flag=$1
 	shift
 	case "$flag" in
-		## Next line was modified by jrcs/docker-letsencrypt-nginx-proxy-companion
+		## Next line was modified by tekintian/dlnpc
 		--dry-run|-d) dryRun=1 ;;
 		--help|-h|'-?') usage && exit 0 ;;
 		--test|-t) argTests["$1"]=1 && shift ;;
 		--config|-c) configs+=("$(readlink -f "$1")") && shift ;;
-		## Next line was modified by jrcs/docker-letsencrypt-nginx-proxy-companion
+		## Next line was modified by tekintian/dlnpc
 		--keep-namespace|-k) keepNamespace=1 ;;
 		--) break ;;
 		*)
@@ -284,7 +284,7 @@ fi
 # load the configs
 declare -A testPaths=()
 for conf in "${configs[@]}"; do
-	## Next two line were modified by jrcs/docker-letsencrypt-nginx-proxy-companion
+	## Next two line were modified by tekintian/dlnpc
   # shellcheck source=./config.sh
 	source "$conf"
 	## End of modifications
@@ -320,7 +320,7 @@ for dockerImage in "$@"; do
 	#version="${tagVar%-*}"
 	variant="${tagVar##*-}"
 
-	## Irrelevant code was removed here by jrcs/docker-letsencrypt-nginx-proxy-companion
+	## Irrelevant code was removed here by tekintian/dlnpc
 
 	testRepo="$repo"
 	if [ -z "$keepNamespace" ]; then
@@ -329,7 +329,7 @@ for dockerImage in "$@"; do
 	[ -z "${testAlias[$repo]}" ] || testRepo="${testAlias[$repo]}"
 
 	explicitVariant=
-	## Next four lines were modified by jrcs/docker-letsencrypt-nginx-proxy-companion
+	## Next four lines were modified by tekintian/dlnpc
 	if [ "${explicitTests[:$variant]}" ] \
 	|| [ "${explicitTests[$repo:$variant]}" ] \
 	|| [ "${explicitTests[$testRepo:$variant]}" ]
@@ -366,14 +366,14 @@ for dockerImage in "$@"; do
 
 	tests=()
 	for t in "${testCandidates[@]}"; do
-		## Next line was modified by jrcs/docker-letsencrypt-nginx-proxy-companion
+		## Next line was modified by tekintian/dlnpc
 		if [ ${#argTests[@]} -gt 0 ] && [ -z "${argTests[$t]}" ]; then
 		## End of modified code
 			# skipping due to -t
 			continue
 		fi
 
-		## Next seven lines were modified by jrcs/docker-letsencrypt-nginx-proxy-companion
+		## Next seven lines were modified by tekintian/dlnpc
 		if [ -n "${globalExcludeTests[${testRepo}_$t]}" ] \
 		|| [ -n "${globalExcludeTests[${testRepo}:${variant}_$t]}" ] \
 		|| [ -n "${globalExcludeTests[:${variant}_$t]}" ] \
@@ -400,7 +400,7 @@ for dockerImage in "$@"; do
 		scriptDir="${testPaths[$t]}"
 		if [ -d "$scriptDir" ]; then
 			script="$scriptDir/run.sh"
-			## Next nine lines were modified or added by jrcs/docker-letsencrypt-nginx-proxy-companion
+			## Next nine lines were modified or added by tekintian/dlnpc
 			if [ -x "$script" ] && [ ! -d "$script" ]; then
 				if [ $dryRun ]; then
 					if "$script" $dockerImage; then

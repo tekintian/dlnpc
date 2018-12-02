@@ -1,25 +1,25 @@
-[![Build Status](https://travis-ci.org/JrCs/docker-letsencrypt-nginx-proxy-companion.svg?branch=master)](https://travis-ci.org/JrCs/docker-letsencrypt-nginx-proxy-companion)
-[![GitHub release](https://img.shields.io/github/release/jrcs/docker-letsencrypt-nginx-proxy-companion.svg)](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion/releases)
-[![Image info](https://images.microbadger.com/badges/image/tekintian/lnpc.svg)](https://hub.docker.com/r/tekintian/lnpc "Click to view the image on Docker Hub")
-[![Docker stars](https://img.shields.io/docker/stars/tekintian/lnpc.svg)](https://hub.docker.com/r/tekintian/lnpc "Click to view the image on Docker Hub")
-[![Docker pulls](https://img.shields.io/docker/pulls/tekintian/lnpc.svg)](https://hub.docker.com/r/tekintian/lnpc "Click to view the image on Docker Hub")
+[![Build Status](https://travis-ci.org/tekintian/dlnpc.svg?branch=master)](https://travis-ci.org/tekintian/dlnpc)
+[![GitHub release](https://img.shields.io/github/release/tekintian/dlnpc.svg)](https://github.com/tekintian/dlnpc/releases)
+[![Image info](https://images.microbadger.com/badges/image/tekintian/dlnpc.svg)](https://hub.docker.com/r/tekintian/dlnpc "Click to view the image on Docker Hub")
+[![Docker stars](https://img.shields.io/docker/stars/tekintian/dlnpc.svg)](https://hub.docker.com/r/tekintian/dlnpc "Click to view the image on Docker Hub")
+[![Docker pulls](https://img.shields.io/docker/pulls/tekintian/dlnpc.svg)](https://hub.docker.com/r/tekintian/dlnpc "Click to view the image on Docker Hub")
 
-LNPC [letsencrypt  nginx proxy companion] is a lightweight companion container for the [nginx-proxy](https://github.com/jwilder/nginx-proxy). It allows the creation/renewal of Let's Encrypt certificates automatically. See [Let's Encrypt section](#lets-encrypt) for configuration details.
+LNPC [letsencrypt  nginx proxy companion] is a lightweight companion container for the [nginx-proxy](https://github.com/tekintian/nginx-proxy). It allows the creation/renewal of Let's Encrypt certificates automatically. See [Let's Encrypt section](#lets-encrypt) for configuration details.
 
-Please note that [letsencrypt-nginx-proxy-companion does not work with ACME v2 endpoints yet](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion/issues/319).
+Please note that [letsencrypt-nginx-proxy-companion does not work with ACME v2 endpoints yet](https://github.com/tekintian/dlnpc/issues/319).
 
 ### Features:
 * Automatic creation/renewal of Let's Encrypt certificates using original nginx-proxy container.
 * Support creation of Multi-Domain ([SAN](https://www.digicert.com/subject-alternative-name.htm)) Certificates.
 * Automatic creation of a Strong Diffie-Hellman Group (for having an A+ Rate on the [Qualsys SSL Server Test](https://www.ssllabs.com/ssltest/)).
-* Automatic creation of a self-signed [default certificate](https://github.com/jwilder/nginx-proxy#how-ssl-support-works) if a user-provided one can't be found.
+* Automatic creation of a self-signed [default certificate](https://github.com/tekintian/nginx-proxy#how-ssl-support-works) if a user-provided one can't be found.
 * Work with all versions of docker.
 
 ![schema](./schema.png)
 
 #### Usage
 
-To use it with original [nginx-proxy](https://github.com/jwilder/nginx-proxy) container you must declare 3 writable volumes from the [nginx-proxy](https://github.com/jwilder/nginx-proxy) container:
+To use it with original [nginx-proxy](https://github.com/tekintian/nginx-proxy) container you must declare 3 writable volumes from the [nginx-proxy](https://github.com/tekintian/nginx-proxy) container:
 * `/etc/nginx/certs` to create/renew Let's Encrypt certificates
 * `/etc/nginx/vhost.d` to change the configuration of vhosts (needed by Let's Encrypt)
 * `/usr/share/nginx/html` to write challenge files.
@@ -34,10 +34,10 @@ $ docker run -d -p 80:80 -p 443:443 \
     -v /etc/nginx/vhost.d \
     -v /usr/share/nginx/html \
     -v /var/run/docker.sock:/tmp/docker.sock:ro \
-    --label com.github.tekintian.lnpc.nginx_proxy \
-    jwilder/nginx-proxy
+    --label com.github.tekintian.dlnpc.nginx_proxy \
+    tekintian/nginx-proxy
 ```
-The "com.github.tekintian.lnpc.nginx_proxy" label is needed so that the letsencrypt container knows which nginx proxy container to use.
+The "com.github.tekintian.dlnpc.nginx_proxy" label is needed so that the letsencrypt container knows which nginx proxy container to use.
 
 * Second start this container:
 ```bash
@@ -45,29 +45,29 @@ $ docker run -d \
     -v /path/to/certs:/etc/nginx/certs:rw \
     -v /var/run/docker.sock:/var/run/docker.sock:ro \
     --volumes-from nginx-proxy \
-    tekintian/lnpc
+    tekintian/dlnpc
 ```
 
 Then start any containers you want proxied with a env var `VIRTUAL_HOST=subdomain.youdomain.com`
 
     $ docker run -e "VIRTUAL_HOST=foo.bar.com" ...
 
-The containers being proxied must [expose](https://docs.docker.com/reference/run/#expose-incoming-ports) the port to be proxied, either by using the `EXPOSE` directive in their `Dockerfile` or by using the `--expose` flag to `docker run` or `docker create`. See [nginx-proxy](https://github.com/jwilder/nginx-proxy) for more informations. To generate automatically Let's Encrypt certificates see next section.
+The containers being proxied must [expose](https://docs.docker.com/reference/run/#expose-incoming-ports) the port to be proxied, either by using the `EXPOSE` directive in their `Dockerfile` or by using the `--expose` flag to `docker run` or `docker create`. See [nginx-proxy](https://github.com/tekintian/nginx-proxy) for more informations. To generate automatically Let's Encrypt certificates see next section.
 
 #### Separate Containers
-nginx proxy can also be run as two separate containers using the [jwilder/docker-gen](https://github.com/jwilder/docker-gen)
+nginx proxy can also be run as two separate containers using the [tekintian/docker-gen](https://github.com/tekintian/docker-gen)
 image and the official [nginx](https://hub.docker.com/_/nginx/) image.
 
 You may want to do this to prevent having the docker socket bound to a publicly exposed container service (avoid to mount the docker socket in the nginx exposed container). It's better in a security point of view.
 
 To run nginx proxy as a separate container you'll need:
 
-1) To mount the template file [nginx.tmpl](https://github.com/jwilder/nginx-proxy/blob/master/nginx.tmpl) into the docker-gen container. You can get the latest official [nginx.tmpl](https://github.com/jwilder/nginx-proxy/blob/master/nginx.tmpl) with a command like:
+1) To mount the template file [nginx.tmpl](https://github.com/tekintian/nginx-proxy/blob/master/nginx.tmpl) into the docker-gen container. You can get the latest official [nginx.tmpl](https://github.com/tekintian/nginx-proxy/blob/master/nginx.tmpl) with a command like:
 ```bash
-curl https://raw.githubusercontent.com/jwilder/nginx-proxy/master/nginx.tmpl > /path/to/nginx.tmpl
+curl https://raw.githubusercontent.com/tekintian/nginx-proxy/master/nginx.tmpl > /path/to/nginx.tmpl
 ```
 
-2) Use the `com.github.tekintian.lnpc.docker_gen` label on the docker-gen container, or explicitly set the `NGINX_DOCKER_GEN_CONTAINER` environment variable to the name or id of that container.
+2) Use the `com.github.tekintian.dlnpc.docker_gen` label on the docker-gen container, or explicitly set the `NGINX_DOCKER_GEN_CONTAINER` environment variable to the name or id of that container.
 
 Examples:
 
@@ -79,7 +79,7 @@ $ docker run -d -p 80:80 -p 443:443 \
     -v /etc/nginx/vhost.d \
     -v /usr/share/nginx/html \
     -v /path/to/certs:/etc/nginx/certs:ro \
-    --label com.github.tekintian.lnpc.nginx_proxy \
+    --label com.github.tekintian.dlnpc.nginx_proxy \
     nginx
 ```
 
@@ -90,25 +90,25 @@ $ docker run -d \
     --volumes-from nginx \
     -v /path/to/nginx.tmpl:/etc/docker-gen/templates/nginx.tmpl:ro \
     -v /var/run/docker.sock:/tmp/docker.sock:ro \
-    --label com.github.tekintian.lnpc.docker_gen \
-    jwilder/docker-gen \
+    --label com.github.tekintian.dlnpc.docker_gen \
+    tekintian/docker-gen \
     -notify-sighup nginx -watch -wait 5s:30s /etc/docker-gen/templates/nginx.tmpl /etc/nginx/conf.d/default.conf
 ```
 
 * Then start this container:
 ```bash
 $ docker run -d \
-    --name nginx-letsencrypt \
+    --name dlnpc \
     --volumes-from nginx \
     -v /path/to/certs:/etc/nginx/certs:rw \
     -v /var/run/docker.sock:/var/run/docker.sock:ro \
-    tekintian/lnpc
+    tekintian/dlnpc
 ```
 
 * Then start any containers to be proxied as described previously.
 
 Note:
-If the 3 containers are using static names, both labels `com.github.tekintian.lnpc.nginx_proxy` on nginx container and `com.github.tekintian.lnpc.docker_gen` on the docker-gen container can be removed.
+If the 3 containers are using static names, both labels `com.github.tekintian.dlnpc.nginx_proxy` on nginx container and `com.github.tekintian.dlnpc.docker_gen` on the docker-gen container can be removed.
 
 The docker environment variables to be set on the letsencrypt container are:
 * `NGINX_PROXY_CONTAINER` set to the name of the nginx container (here `nginx`)
@@ -117,13 +117,13 @@ The docker environment variables to be set on the letsencrypt container are:
 Example:
 ```bash
 $ docker run -d \
-    --name nginx-letsencrypt \
+    --name dlnpc \
     --volumes-from nginx \
     -v /path/to/certs:/etc/nginx/certs:rw \
     -v /var/run/docker.sock:/var/run/docker.sock:ro \
     -e NGINX_DOCKER_GEN_CONTAINER=nginx-gen \
     -e NGINX_PROXY_CONTAINER=nginx \
-    tekintian/lnpc
+    tekintian/dlnpc
 ```
 
 
@@ -140,7 +140,7 @@ $ docker run -d \
     -e "VIRTUAL_HOST=example.com,www.example.com,mail.example.com" \
     -e "LETSENCRYPT_HOST=example.com,www.example.com,mail.example.com" \
     -e "LETSENCRYPT_EMAIL=foo@bar.com" \
-    tutum/apache-php
+    tekintian/tengine-php
 ```
 
 **Note:** the `VIRTUAL_HOST` (and `LETSENCRYPT_HOST`) must be (a) reachable domain(s) for LetEncrypt to be able to validate the challenge and provide the certificate.
@@ -209,7 +209,7 @@ $ docker run -d \
     -v /path/to/certs:/etc/nginx/certs:rw \
     --volumes-from nginx-proxy \
     -v /var/run/docker.sock:/var/run/docker.sock:ro \
-    tekintian/lnpc
+    tekintian/dlnpc
 ```
 
 * `DEBUG` - Set it to `true` to enable debugging of the entrypoint script and generation of LetsEncrypt certificates, which could help you pin point any configuration issues.
@@ -218,9 +218,9 @@ $ docker run -d \
 
 * `REUSE_PRIVATE_KEYS` - Set it to `true` to make simp_le reuse previously generated private key for each certificate instead of creating a new one on certificate renewal. Recommended if you intend to use HPKP.
 
-* The `com.github.tekintian.lnpc.nginx_proxy` label - set this label on the nginx-proxy container to tell the docker-letsencrypt-nginx-proxy-companion container to use it as the proxy.
+* The `com.github.tekintian.dlnpc.nginx_proxy` label - set this label on the nginx-proxy container to tell the dlnpc container to use it as the proxy.
 
-* The `com.github.tekintian.lnpc.docker_gen` label - set this label on the docker-gen container to tell the docker-letsencrypt-nginx-proxy-companion container to use it as the docker-gen when it's split from nginx (separate containers).
+* The `com.github.tekintian.dlnpc.docker_gen` label - set this label on the docker-gen container to tell the dlnpc container to use it as the docker-gen when it's split from nginx (separate containers).
 
 * `DOCKER_PROVIDER` - Set this to change behavior on container ID retrieval. Optional. Current supported values:
   * No value (empty, not  set): no change in behavior.
@@ -233,7 +233,7 @@ $ docker run -d \
 If you want other examples how to use this container, look at:
 
 * [Evert Ramos's Examples](https://github.com/evertramos/docker-compose-letsencrypt-nginx-proxy-companion) - using docker-compose version '3'
-* [Karl Fathi's Examples](https://github.com/fatk/docker-letsencrypt-nginx-proxy-companion-examples)
+* [Karl Fathi's Examples](https://github.com/fatk/dlnpc-examples)
 * [More examples from Karl](https://github.com/pixelfordinner/pixelcloud-docker-apps/tree/master/nginx-proxy)
 * [George Ilyes' Examples](https://github.com/gilyes/docker-nginx-letsencrypt-sample)
 * [Dmitry's simple docker-compose example](https://github.com/dmitrym0/simple-lets-encrypt-docker-compose-sample)

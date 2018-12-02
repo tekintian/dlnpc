@@ -2,7 +2,7 @@
 set -e
 
 testAlias+=(
-	[jrcs/letsencrypt-nginx-proxy-companion]='le-companion'
+	[tekintian/dlnpc]='le-companion'
 )
 
 imageTests+=(

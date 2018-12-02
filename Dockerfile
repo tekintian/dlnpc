@@ -1,5 +1,5 @@
 FROM golang:1.11-alpine AS go-builder
-MAINTAINER TekinTian https://githu.com/tekintian/
+LABEL maintainer="TekinTian https://githu.com/tekintian/"
 
 ENV DOCKER_GEN_VERSION=0.7.4
 
@@ -12,8 +12,8 @@ RUN apk add --update \
         musl-dev
 
 # Build docker-gen
-RUN go get github.com/jwilder/docker-gen \
-    && cd /go/src/github.com/jwilder/docker-gen \
+RUN go get github.com/tekintian/docker-gen \
+    && cd /go/src/github.com/tekintian/docker-gen \
     && git checkout $DOCKER_GEN_VERSION \
     && make get-deps \
     && make all
@@ -35,7 +35,7 @@ RUN apk add --update \
     && rm /var/cache/apk/*
 
 # Install docker-gen from build stage
-COPY --from=go-builder /go/src/github.com/jwilder/docker-gen/docker-gen /usr/local/bin/
+COPY --from=go-builder /go/src/github.com/tekintian/docker-gen/docker-gen /usr/local/bin/
 
 # Install simp_le
 COPY /install_simp_le.sh /app/install_simp_le.sh

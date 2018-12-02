@@ -34,13 +34,13 @@ case $SETUP in
   docker run --rm -d \
     --name "$nginx_vol" \
     -v /var/run/docker.sock:/tmp/docker.sock:ro \
-    jwilder/nginx-proxy > /dev/null
+    tekintian/nginx-proxy > /dev/null
 
   # Run a nginx-proxy container named nginx-env-var, without the nginx_proxy label
   docker run --rm -d \
     --name "$nginx_env" \
     -v /var/run/docker.sock:/tmp/docker.sock:ro \
-    jwilder/nginx-proxy > /dev/null
+    tekintian/nginx-proxy > /dev/null
 
   # This should target the nginx-proxy container obtained with
   # the --volume-from argument (nginx-volumes-from)
@@ -70,8 +70,8 @@ case $SETUP in
   labeled_nginx_cid="$(docker run --rm -d \
     --name "$nginx_lbl" \
     -v /var/run/docker.sock:/tmp/docker.sock:ro \
-    --label com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy \
-    jwilder/nginx-proxy)"
+    --label com.github.tekintian.dlnpc.nginx_proxy \
+    tekintian/nginx-proxy)"
 
   # This should target the nginx-proxy container with the label (nginx-label)
   docker run --rm \
@@ -167,7 +167,7 @@ EOF
   # Spawn a nginx container named nginx-label, with the nginx_proxy label.
   labeled_nginx1_cid="$(docker run --rm -d \
     --name "$nginx_lbl" \
-    --label com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy \
+    --label com.github.tekintian.dlnpc.nginx_proxy \
     nginx:alpine)"
 
   # This should target the nginx container whose id or name was obtained with
@@ -191,7 +191,7 @@ EOF
   # Spawn a "fake docker-gen" container named docker-gen-label, with the docker_gen label.
   labeled_docker_gen_cid="$(docker run --rm -d \
     --name "$docker_gen_lbl" \
-    --label com.github.jrcs.letsencrypt_nginx_proxy_companion.docker_gen \
+    --label com.github.tekintian.dlnpc.docker_gen \
     nginx:alpine)"
 
   # This should target the nginx container whose id or name was obtained with
@@ -228,7 +228,7 @@ EOF
   # Spawn a nginx container named nginx-label, with the nginx_proxy label.
   labeled_nginx2_cid="$(docker run --rm -d \
     --name "$nginx_lbl" \
-    --label com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy \
+    --label com.github.tekintian.dlnpc.nginx_proxy \
     nginx:alpine)"
 
   # This should target the nginx container whose id or name was obtained with
